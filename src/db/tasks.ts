@@ -15,10 +15,10 @@ const TaskSchema = new mongoose.Schema({
   userid: { ref: 'User', type: mongoose.Schema.Types.ObjectId },
   fileid: { ref: 'File', type: mongoose.Schema.Types.ObjectId },
   requestid: { type: String, required: true, unique: true },
-  originalFilename: { type: String, unique: true },
-  pathFileServer1: { type: String, unique: true },
-  pathFileServer2: { type: String, unique: true },
-  taskname: { type: String, unique: true },
+  originalFilename: { type: String },
+  pathFileServer1: { type: String },
+  pathFileServer2: { type: String },
+  taskname: { type: String },
 })
 
 export const TaskModel = mongoose.model('Task', TaskSchema)
