@@ -1,20 +1,37 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
+
+export const statuses = Object.freeze({
+  PROCESSING_ERROR: 'processing_error',
+  PROCESSING_STARTED: 'processing_started',
+  UPLOADED_SERVICE_1: 'uploaded_service_1',
+  UPLOADED_SERVICE_2: 'uploaded_service_2',
+  PARSING_STARTED: 'parsing_started',
+  PARSED: 'parsed',
+})
 
 // Task Config
 const TaskSchema = new mongoose.Schema({
-  taskname: { type: String, required: true },
-  filesrc: { type: String, required: true },
-  userid: { ref: 'User', type: mongoose.Schema.Types.ObjectId }
-});
+  status: { type: String, enum : Object.values(statuses), required: true },
+  userid: { ref: 'User', type: mongoose.Schema.Types.ObjectId },
+  fileid: { ref: 'File', type: mongoose.Schema.Types.ObjectId },
+  requestid: { type: String, required: true, unique: true },
+  originalFilename: { type: String, unique: true },
+  pathFileServer1: { type: String, unique: true },
+  pathFileServer2: { type: String, unique: true },
+  taskname: { type: String, unique: true },
+})
 
 export const TaskModel = mongoose.model('Task', TaskSchema)
 
 // Task Actions
-export const getTasks = () => TaskModel.find();
-export const getTasksByUserid = (userid: string) => TaskModel.find({ userid })
-export const getTaskByFilesrc = (filesrc: string) => TaskModel.findOne({ filesrc })
-export const getTaskByTaskname = (taskname: string) => TaskModel.findOne({ taskname })
-export const getTaskById = (id: string) => TaskModel.findById(id)
 export const createTask = (values: Record<string, any>) => new TaskModel(values).save().then((task) => task.toObject())
-export const deleteTaskById = (id: string) => TaskModel.findOneAndDelete({ _id: id })
+export const getTaskById = (id: string) => TaskModel.findById(id)
 export const updateTaskById = (id: string, values: Record<string, any>) => TaskModel.findByIdAndUpdate(id, values)
+export const deleteTaskById = (id: string) => TaskModel.findOneAndDelete({ _id: id })
+
+export const getTaskByTaskname = (taskname: string) => TaskModel.findOne({ taskname })
+export const getTaskByRequestid = (requestid: string) => TaskModel.findOne({ requestid })
+
+export const getTasks = () => TaskModel.find()
+export const getTasksByUserid = (userid: string) => TaskModel.find({ userid })
+export const getTasksByStatus = (status: string) => TaskModel.find({ status })

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 // File Config
 const FileSchema = new mongoose.Schema({
@@ -6,16 +6,18 @@ const FileSchema = new mongoose.Schema({
   filesrc: { type: String, required: true },
   taskid: { ref: 'Task', type: mongoose.Schema.Types.ObjectId },
   filedata: [],
-});
+})
 
-export const FileModel = mongoose.model('File', FileSchema);
+export const FileModel = mongoose.model('File', FileSchema)
 
 // File Actions
-export const getFiles = () => FileModel.find()
+export const createFile = (values: Record<string, any>) => new FileModel(values).save().then((file) => file.toObject())
+export const getFileById = (id: string) => FileModel.findById(id)
+export const updateFileById = (id: string, values: Record<string, any>) => FileModel.findByIdAndUpdate(id, values)
+export const deleteFileById = (id: string) => FileModel.findOneAndDelete({ _id: id })
+
 export const getFileByFilename = (filename: string) => FileModel.findOne({ filename })
 export const getFileByFilesrc = (filesrc: string) => FileModel.findOne({ filesrc })
 export const getFileByTaskid = (taskid: string) => FileModel.findOne({ taskid })
-export const getFileById = (id: string) => FileModel.findById(id)
-export const createFile = (values: Record<string, any>) => new FileModel(values).save().then((file) => file.toObject())
-export const deleteFileById = (id: string) => FileModel.findOneAndDelete({ _id: id })
-export const updateFileById = (id: string, values: Record<string, any>) => FileModel.findByIdAndUpdate(id, values)
+
+export const getFiles = () => FileModel.find()

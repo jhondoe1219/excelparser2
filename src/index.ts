@@ -1,33 +1,34 @@
-import express from 'express';
-import http from 'http';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
-import cors from 'cors';
+import cookieParser from 'cookie-parser'
+import compression from 'compression'
+import bodyParser from 'body-parser'
+import mongoose from 'mongoose'
+import express from 'express'
+import cors from 'cors'
+import http from 'http'
 
-import router from './router';
-import mongoose from 'mongoose';
+import router from './router'
 
-const app = express();
+const PORT = 8080
+const MONGO_URL = 'mongodb://localhost:27017'
 
-app.use(cors({
-  credentials: true,
-}));
+const app = express()
 
-app.use(compression());
-app.use(cookieParser());
-app.use(bodyParser.json());
+app.use(cors({ credentials: true }))
+app.use(compression())
+app.use(cookieParser())
+app.use(bodyParser.json())
+app.use('/', router())
 
-const server = http.createServer(app);
 
-server.listen(8080, () => {
-  console.log('Server running on http://localhost:8080/');
-});
+http
+  .createServer(app)
+  .listen(PORT, () => console.log(`Server running on http://localhost:${PORT}/`))
 
-const MONGO_URL = 'mongodb://localhost:27017'; // DB URI
+mongoose
+  .connect(MONGO_URL)
+  .then(() => console.log(`MongoDB connected on ${MONGO_URL}`))
+  .catch(error => console.log(`MongoDB connecting error on ${MONGO_URL}`, error))
 
-mongoose.Promise = Promise;
-mongoose.connect(MONGO_URL);
-mongoose.connection.on('error', (error: Error) => console.log(error));
 
-app.use('/', router());
+process.on('uncaughtException', (error: Error) => console.log('Service uncaught error: ', error))
+mongoose.connection.on('error', (error: Error) => console.log('MongoDB error: ', error))
