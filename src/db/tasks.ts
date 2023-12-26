@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 export const statuses = Object.freeze({
-  PROCESSING_ERROR: 'processing_error',
+  PARSING_ERROR: 'parsing_error',
   PROCESSING_STARTED: 'processing_started',
   UPLOADED_SERVICE_1: 'uploaded_service_1',
   UPLOADED_SERVICE_2: 'uploaded_service_2',
@@ -33,5 +33,7 @@ export const getTaskByTaskname = (taskname: string) => TaskModel.findOne({ taskn
 export const getTaskByRequestid = (requestid: string) => TaskModel.findOne({ requestid })
 
 export const getTasks = () => TaskModel.find()
+
 export const getTasksByUserid = (userid: string) => TaskModel.find({ userid })
 export const getTasksByStatus = (status: string) => TaskModel.find({ status })
+export const getUploadedFilesTasksSortByCreatedAt = () => TaskModel.find({ status: statuses.UPLOADED_SERVICE_2 }).sort({ createdAt: -1 })

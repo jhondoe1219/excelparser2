@@ -1,6 +1,3 @@
-import cookieParser from 'cookie-parser'
-import compression from 'compression'
-import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import express from 'express'
 import cors from 'cors'
@@ -8,15 +5,12 @@ import http from 'http'
 
 import router from './router'
 
-const PORT = 8080
+const PORT = 4000
 const MONGO_URL = 'mongodb://localhost:27017'
 
 const app = express()
 
-app.use(cors({ credentials: true }))
-app.use(compression())
-app.use(cookieParser())
-app.use(bodyParser.json())
+app.use(cors())
 app.use('/', router())
 
 
